@@ -1,0 +1,40 @@
+#pragma once
+
+#include <idisa/idisa_builder.h>
+
+namespace IDISA {
+
+constexpr unsigned ARM_width = 128;
+
+class IDISA_ARM_Builder : public virtual IDISA_Builder {
+public:
+    static constexpr unsigned NativeBitBlockWidth = ARM_width;
+
+    IDISA_ARM_Builder(llvm::LLVMContext & C, const FeatureSet & featureSet, unsigned bitBlockWidth, unsigned laneWidth)
+    : IDISA_Builder(C, featureSet, ARM_width, bitBlockWidth, laneWidth) {
+
+    }
+
+    virtual std::string getBuilderUniqueName() override;
+    llvm::Value* simd_popcount(unsigned fw, llvm::Value* a) override;
+    llvm::Value* simd_bitreverse(unsigned fw, llvm::Value* a) override;
+    llvm::Value * esimd_mergeh(unsigned fw, llvm::Value * a, llvm::Value * b) override;
+    llvm::Value * esimd_mergel(unsigned fw, llvm::Value * a, llvm::Value * b) override;
+    llvm::Value * hsimd_packh(unsigned fw, llvm::Value * a, llvm::Value * b) override;
+    llvm::Value * hsimd_packl(unsigned fw, llvm::Value * a, llvm::Value * b) override;
+    llvm::Value * hsimd_packus(unsigned fw, llvm::Value * a, llvm::Value * b) override;
+    llvm::Value * mvmd_shuffle(unsigned fw, llvm::Value * data_table, llvm::Value * index_vector) override;
+    //Pairwise addition
+    llvm::Value * hsimd_pairwisesum(unsigned fw, llvm::Value * Val_a, llvm::Value * Val_b) override;
+
+
+    ~IDISA_ARM_Builder() {}
+};
+
+}
+
+
+
+//llvm::Value * IDISA_Builder::hsimd_pairwisesum(unsigned fw, llvm::Value * a, llvm::Value * b) {
+//    UnsupportedFieldWidthError(fw, "hsimd_pairwisesum");
+//}
